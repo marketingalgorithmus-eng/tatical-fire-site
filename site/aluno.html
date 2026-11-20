@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Área do Aluno · Tatical Fire</title>
+<link rel="icon" href="assets/img/logo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+  body{font-size:16px}
+  /* ---------- login ---------- */
+  .login{position:fixed;inset:0;z-index:50;display:grid;grid-template-columns:1.1fr 1fr;background:var(--bg)}
+  .login.hide{display:none}
+  .login-art{position:relative;overflow:hidden;isolation:isolate;display:flex;flex-direction:column;justify-content:flex-end;padding:50px;border-right:1px solid var(--line)}
+  .login-art img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;filter:grayscale(.5) sepia(.2) brightness(.55)}
+  .login-art::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,var(--bg),transparent 60%)}
+  .login-form{display:flex;flex-direction:column;justify-content:center;padding:50px;max-width:520px;width:100%;margin:0 auto}
+  .login-form img{width:84px;border-radius:50%;margin-bottom:26px}
+
+  /* ---------- app ---------- */
+  .app{display:grid;grid-template-columns:250px 1fr;min-height:100vh;transition:grid-template-columns .3s var(--ease)}
+  .app.collapsed{grid-template-columns:76px 1fr}
+  .sidebar{position:sticky;top:0;height:100vh;background:var(--bg-2);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:20px 12px;overflow-y:auto;overflow-x:hidden}
+  .sb-top{display:flex;align-items:center;justify-content:space-between;padding:0 6px 22px;gap:10px}
+  .sb-top .brand img{width:40px;height:40px}
+  .sb-top .brand-name{font-size:18px}
+  .collapse-btn{width:30px;height:30px;flex:none;background:var(--olive);display:grid;place-items:center;transition:transform .3s}
+  .collapse-btn svg{width:14px;height:14px}
+  .app.collapsed .collapse-btn{transform:rotate(180deg)}
+  .app.collapsed .brand-name,.app.collapsed .sb-link span,.app.collapsed .sb-label{display:none}
+  .app.collapsed .sb-top{flex-direction:column}
+  .sb-label{font-family:var(--ff-mono);font-size:10px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase;padding:14px 12px 8px}
+  .sb-link{display:flex;align-items:center;gap:12px;padding:11px 12px;color:var(--muted);font-weight:600;font-size:15px;width:100%;text-align:left;border-left:2px solid transparent;transition:all .2s;white-space:nowrap}
+  .sb-link svg{width:19px;height:19px;flex:none}
+  .sb-link:hover{color:var(--text);background:rgba(200,184,138,.05)}
+  .sb-link.on{color:#fff;background:linear-gradient(90deg,rgba(86,101,58,.55),rgba(86,101,58,.15));border-left-color:var(--red)}
+  .sb-sep{height:1px;background:var(--line);margin:10px 6px}
+  .sb-bottom{margin-top:auto}
+  .badge-n{margin-left:auto;background:var(--red);color:#fff;font-size:11px;font-family:var(--ff-mono);padding:1px 6px}
+  .app.collapsed .badge-n{display:none}
+
+  .main{min-width:0;padding:0 0 60px}
+  .topbar-app{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 32px;background:rgba(10,12,8,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .search{flex:1;max-width:420px;position:relative}
+  .search input{width:100%;background:var(--bg-2);border:1px solid var(--line);padding:10px 14px 10px 40px;color:var(--text);font:inherit;outline:none}
+  .search input:focus{border-color:var(--sand)}
+  .search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:17px;color:var(--dim)}
+  .user-chip{display:flex;align-items:center;gap:10px}
+  .user-chip .avatar{width:38px;height:38px;font-size:16px}
+  .user-chip b{display:block;font-size:14px;line-height:1.1}
+  .user-chip small{color:var(--dim);font-size:12px}
+  .mob-menu{display:none;width:40px;height:40px;border:1px solid var(--line-2);place-items:center}
+  .view{padding:28px 32px;animation:fadeUp .5s var(--ease)}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .view-title{display:flex;align-items:center;gap:14px;font-size:38px;margin-bottom:24px}
+
+  /* hero continuar */
+  .ahero{position:relative;overflow:hidden;isolation:isolate;border:1px solid var(--line-2);min-height:340px;display:flex;align-items:flex-end;padding:36px;margin-bottom:10px}
+  .ahero .bg{position:absolute;inset:0;z-index:-2;background:radial-gradient(ellipse 60% 90% at 80% 40%,rgba(86,101,58,.6),transparent 70%),var(--bg-2)}
+  .ahero .bg img{position:absolute;right:-60px;top:50%;transform:translateY(-50%);width:520px;opacity:.35}
+  .ahero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,var(--bg) 0%,rgba(10,12,8,.6) 50%,transparent)}
+  .ahero h2{font-size:clamp(44px,5vw,76px);margin:10px 0 10px}
+  .prog{height:4px;background:var(--line);position:relative;margin:14px 0 6px;max-width:380px}
+  .prog i{position:absolute;inset:0;width:var(--p,0%);background:var(--red)}
+
+  /* fileiras */
+  .row-head{display:flex;justify-content:space-between;align-items:center;margin:34px 0 14px}
+  .row-head h3{font-size:26px;letter-spacing:.04em}
+  .row-ctrl{display:flex;gap:6px}
+  .row-ctrl button{width:36px;height:36px;border:1px solid var(--line-2);display:grid;place-items:center}
+  .row-ctrl button:hover{background:var(--red);border-color:var(--red)}
+  .row-ctrl svg{width:15px}
+  .row{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:4px 0 8px}
+  .row::-webkit-scrollbar{display:none}
+  .tile{flex:0 0 clamp(160px,14vw,210px);scroll-snap-align:start;text-align:left;transition:transform .35s var(--ease);position:relative}
+  .tile:hover{transform:translateY(-6px)}
+  .tile:hover .poster{border-color:var(--sand)}
+  .tile .poster .p-title{font-size:clamp(24px,2vw,30px)}
+  .tile .tprog{height:3px;background:var(--line);margin-top:8px;position:relative}
+  .tile .tprog i{position:absolute;inset:0;width:var(--p);background:var(--red)}
+  .tile .tmeta{font-size:12px;color:var(--dim);margin-top:6px;font-family:var(--ff-mono);letter-spacing:.06em}
+  .tile .lock{position:absolute;top:14px;right:14px;z-index:3;width:28px;height:28px;background:rgba(10,12,8,.8);display:grid;place-items:center;border:1px solid var(--line-2)}
+  .tile .lock svg{width:14px}
+  .grid-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:18px}
+  .grid-tiles .tile{flex:auto}
+
+  /* player */
+  .player-wrap{display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start}
+  .video{aspect-ratio:16/9;background:#050604;border:1px solid var(--line-2);position:relative;overflow:hidden;display:grid;place-items:center;isolation:isolate}
+  .video img{position:absolute;width:44%;opacity:.18;z-index:-1}
+  .video .play{width:84px;height:84px;border-radius:50%;background:var(--red);display:grid;place-items:center;box-shadow:0 0 0 12px rgba(211,38,27,.18);transition:transform .25s}
+  .video .play:hover{transform:scale(1.08)}
+  .video .play svg{width:30px;margin-left:5px}
+  .video .vbar{position:absolute;left:0;right:0;bottom:0;padding:12px 16px;display:flex;align-items:center;gap:12px;background:linear-gradient(0deg,rgba(0,0,0,.8),transparent);font-family:var(--ff-mono);font-size:12px;color:var(--muted)}
+  .video .vbar i{flex:1;height:3px;background:rgba(255,255,255,.15);position:relative}
+  .video .vbar i::after{content:"";position:absolute;inset:0;width:0;background:var(--red);transition:width 12s linear}
+  .video.playing .vbar i::after{width:100%}
+  .video .vlabel{position:absolute;top:14px;left:16px;font-family:var(--ff-mono);font-size:11px;letter-spacing:.14em;color:var(--sand);text-transform:uppercase}
+  .lesson-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin:22px 0 14px;flex-wrap:wrap}
+  .lesson-head h2{font-size:36px}
+  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:18px 0}
+  .tabs button{padding:12px 16px;font-family:var(--ff-head);font-weight:700;font-size:16px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
+  .tabs button.on{color:var(--text);border-color:var(--red)}
+  .modules{border:1px solid var(--line-2);background:var(--bg-2);max-height:calc(100vh - 120px);overflow:auto;position:sticky;top:90px}
+  .modules .mh{padding:18px;border-bottom:1px solid var(--line)}
+  .modules .mh b{font-family:var(--ff-head);font-size:22px;text-transform:uppercase}
+  .mod summary{list-style:none;cursor:pointer;padding:14px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;font-weight:600;font-size:15px}
+  .mod summary::-webkit-details-marker{display:none}
+  .mod summary small{color:var(--dim);font-family:var(--ff-mono);font-size:11px}
+  .lesson{display:flex;gap:12px;align-items:center;padding:12px 18px;width:100%;text-align:left;font-size:14px;color:var(--muted);border-bottom:1px solid var(--line);border-left:2px solid transparent}
+  .lesson:hover{background:rgba(200,184,138,.05);color:var(--text)}
+  .lesson.on{border-left-color:var(--red);color:var(--text);background:rgba(86,101,58,.2)}
+  .lesson .ck{width:20px;height:20px;flex:none;border:1.5px solid var(--line-2);border-radius:50%;display:grid;place-items:center}
+  .lesson.done .ck{background:var(--olive-2);border-color:var(--olive-2)}
+  .lesson.done .ck::after{content:"";width:8px;height:4px;border:solid #fff;border-width:0 0 2px 2px;transform:rotate(-45deg) translate(1px,-1px)}
+  .lesson .dur{margin-left:auto;font-family:var(--ff-mono);font-size:11px;color:var(--dim)}
+  .files{display:grid;gap:10px}
+  .file{display:flex;align-items:center;gap:14px;border:1px solid var(--line);padding:14px;background:var(--bg-2)}
+  .file .fi{width:40px;height:40px;background:var(--olive-dark);display:grid;place-items:center;font-family:var(--ff-mono);font-size:10px;color:var(--sand)}
+
+  /* comunidade */
+  .comm{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start}
+  .box{border:1px solid var(--line);background:var(--bg-2);padding:22px}
+  .composer{display:flex;gap:14px}
+  .composer textarea{flex:1;background:var(--bg);border:1px solid var(--line);color:var(--text);font:inherit;padding:12px;min-height:80px;resize:vertical;outline:none}
+  .composer textarea:focus{border-color:var(--sand)}
+  .cats{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
+  .cat{font-family:var(--ff-head);font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase;padding:6px 12px;border:1px solid var(--line-2);color:var(--muted);display:inline-flex;align-items:center;gap:7px}
+  .cat::before{content:"";width:7px;height:7px;background:var(--red);transform:rotate(45deg)}
+  .cat.on{background:var(--sand);color:#12140e;border-color:var(--sand)}
+  .post{border-top:1px solid var(--line);padding:20px 0;display:grid;gap:10px}
+  .post-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .post-head b{font-size:15px}
+  .post-head .cat{padding:2px 8px;font-size:12px}
+  .post-head small{color:var(--dim);font-size:13px}
+  .post p{color:#d6d2c4}
+  .post .acts{display:flex;gap:18px;font-size:13px;color:var(--muted)}
+  .post .acts button:hover{color:var(--sand)}
+  .post .acts button.liked{color:var(--red)}
+  .mod-list{display:grid;gap:12px;margin-top:14px}
+  .mod-item{display:flex;align-items:center;gap:12px;padding:10px;border:1px solid var(--line);background:var(--bg)}
+  .mod-item .avatar{width:40px;height:40px;font-size:14px;border:2px solid var(--brass)}
+  .mod-item b{display:block;font-size:14px}
+  .mod-item small{color:var(--dim);font-size:12px}
+
+  /* ao vivo / notificações / perfil */
+  .lives{display:grid;gap:14px}
+  .live{display:grid;grid-template-columns:110px 1fr auto;gap:20px;align-items:center;border:1px solid var(--line);background:var(--bg-2);padding:18px}
+  .live .date{text-align:center;border-right:1px solid var(--line);padding-right:18px}
+  .live .date b{display:block;font-family:var(--ff-head);font-size:44px;line-height:1}
+  .live .date small{font-family:var(--ff-mono);font-size:11px;color:var(--sand);letter-spacing:.14em}
+  .live h4{font-size:26px}
+  .live p{color:var(--muted);font-size:14px}
+  .live.now{border-color:var(--red)}
+  .notif{display:flex;gap:14px;padding:16px;border-bottom:1px solid var(--line)}
+  .notif .dotn{width:9px;height:9px;border-radius:50%;background:var(--red);margin-top:7px;flex:none}
+  .notif.read .dotn{background:var(--line-2)}
+  .notif small{color:var(--dim);font-size:12px;display:block}
+  .profile{display:grid;grid-template-columns:320px 1fr;gap:24px;align-items:start}
+  .pcard{text-align:center}
+  .pcard .avatar{width:96px;height:96px;font-size:40px;margin:0 auto 14px;border:2px solid var(--red)}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+  .kpi{border:1px solid var(--line);background:var(--bg-2);padding:18px}
+  .kpi b{font-family:var(--ff-head);font-size:42px;line-height:1;display:block}
+  .kpi small{color:var(--dim);font-family:var(--ff-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+  .cert{display:flex;gap:14px;align-items:center;padding:14px;border:1px solid var(--line);background:var(--bg-2);margin-bottom:10px}
+  .cert img{width:44px;border-radius:50%}
+
+  .backdrop{display:none}
+  @media (max-width:1180px){.player-wrap,.comm{grid-template-columns:1fr}.modules{position:static;max-height:none}}
+  @media (max-width:900px){
+    .login{grid-template-columns:1fr}.login-art{display:none}
+    .app,.app.collapsed{grid-template-columns:1fr}
+    .sidebar{position:fixed;left:0;top:0;z-index:60;width:260px;transform:translateX(-100%);transition:transform .3s var(--ease)}
+    .app.mob-open .sidebar{transform:none}
+    .app.mob-open .backdrop{display:block;position:fixed;inset:0;z-index:55;background:rgba(0,0,0,.6)}
+    .collapse-btn{display:none}
+    .app.collapsed .brand-name,.app.collapsed .sb-link span,.app.collapsed .sb-label{display:revert}
+    .mob-menu{display:grid}
+    .topbar-app,.view{padding-left:16px;padding-right:16px}
+    .user-chip div{display:none}
+    .profile{grid-template-columns:1fr}
+    .live{grid-template-columns:80px 1fr}.live .btn{grid-column:1/-1}
+    .ahero{padding:24px;min-height:300px}
+    .ahero .bg img{width:340px;right:-120px}
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login" id="login">
+  <div class="login-art">
+    <img class="bg" src="assets/img/ig-calibre12.jpg" alt="">
+    <span class="tag"><span class="dot"></span>Plataforma exclusiva</span>
+    <h1 class="display" style="font-size:clamp(56px,7vw,110px);margin:18px 0 12px">Área do <span class="accent">aluno</span></h1>
+    <p class="lead">Aulas, material de apoio, agenda de turmas e comunidade. O treino continua fora do estande.</p>
+  </div>
+  <div class="login-form">
+    <a href="index.html"><img src="assets/img/logo.webp" alt="Tatical Fire"></a>
+    <span class="sec-index">ACESSO RESTRITO</span>
+    <h2 class="h2" style="margin:10px 0 26px">Entrar</h2>
+    <form class="form" id="loginForm">
+      <div class="field"><label for="lEmail">E-mail ou CPF</label><input id="lEmail" placeholder="voce@email.com"></div>
+      <div class="field"><label for="lPass">Senha</label><input id="lPass" type="password" placeholder="••••••••"></div>
+      <div style="display:flex;justify-content:space-between;gap:10px;font-size:14px"><label class="check"><input type="checkbox" checked> Lembrar de mim</label><a href="#" style="color:var(--sand)">Esqueci a senha</a></div>
+      <button class="btn btn-block" type="submit">Acessar plataforma</button>
+      <p class="mono" style="color:var(--dim);text-align:center">Demonstração: clique em acessar sem preencher</p>
+      <p style="text-align:center;color:var(--muted);font-size:14px">Ainda não é aluno? <a href="cadastro.html" style="color:var(--sand)">Faça seu cadastro</a></p>
+    </form>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+  <div class="backdrop" id="backdrop"></div>
+  <aside class="sidebar">
+    <div class="sb-top">
+      <a class="brand" href="index.html"><img src="assets/img/logo.webp" alt=""><span class="brand-name">Tatical<b>Fire</b></span></a>
+      <button class="collapse-btn" id="collapse" aria-label="Recolher menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 17l-5-5 5-5M18 17l-5-5 5-5"/></svg></button>
+    </div>
+    <div class="sb-label">Menu</div>
+    <button class="sb-link" data-view="perfil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg><span>Meu perfil</span></button>
+    <button class="sb-link" data-view="notif"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 1112 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4"/></svg><span>Notificações</span><em class="badge-n" id="nBadge">3</em></button>
+    <div class="sb-sep"></div>
+    <button class="sb-link on" data-view="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/></svg><span>Página inicial</span></button>
+    <button class="sb-link" data-view="cursos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="1"/><path d="M10 9l5 2.5-5 2.5z"/></svg><span>Cursos</span></button>
+    <button class="sb-link" data-view="comunidade"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M2 20c.6-3 3-5 6-5s5.4 2 6 5M14 15c3 0 5.4 2 6 5"/></svg><span>Comunidade</span></button>
+    <button class="sb-link" data-view="aovivo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8a6 6 0 010 8.4M7.8 16.2a6 6 0 010-8.4M19 5a10 10 0 010 14M5 19A10 10 0 015 5"/></svg><span>Ao vivo</span></button>
+    <div class="sb-bottom">
+      <div class="sb-sep"></div>
+      <a class="sb-link" href="cursos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12l-8 8-9-9V3h8z"/></svg><span>Catálogo de cursos</span></a>
+      <button class="sb-link" data-view="suporte"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 115 .5c0 1.5-2.5 2-2.5 3.5M12 17h.01"/></svg><span>Suporte</span></button>
+      <button class="sb-link" id="logout" style="color:var(--red)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 4h4v16h-4M10 17l5-5-5-5M15 12H3"/></svg><span>Sair</span></button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar-app">
+      <button class="mob-menu" id="mobMenu" aria-label="Menu"><svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="search" placeholder="Buscar cursos e aulas..."></label>
+      <div class="user-chip"><div style="text-align:right"><b id="uName">Aluno Demonstração</b><small>Aluno · Operador</small></div><span class="avatar" id="uAv">A</span></div>
+    </div>
+    <div id="view"></div>
+  </main>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script>
+(function(){
+  var C = TF_COURSES;
+  var ARR_L = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 5l-7 7 7 7"/></svg>';
+  var ARR_R = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>';
+  var LOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>';
+  var PLAY = '<svg viewBox="0 0 24 24" fill="#fff"><path d="M6 4l14 8-14 8z"/></svg>';
+
+  /* ---------- armazenamento (opcional) ---------- */
+  function load(k,d){ try{ var v=localStorage.getItem('tf_'+k); return v?JSON.parse(v):d; }catch(e){ return d; } }
+  function save(k,v){ try{ localStorage.setItem('tf_'+k, JSON.stringify(v)); }catch(e){} }
+
+  /* ---------- dados da plataforma ---------- */
+  var ENROLLED = ['basico','capacidade','defensivo1','calibre12','panes','manuseio'];
+  C.forEach(function(c){
+    c.modules = [
+      {t:'Módulo 1 · Briefing', l:[{t:'Boas-vindas ao curso '+c.title,d:'04:12'},{t:'Regras de segurança do estande',d:'08:30'}]},
+      {t:'Módulo 2 · Fundamentos', l:c.topics.slice(0,3).map(function(t,i){return {t:t,d:(9+i*3)+':'+(i*17%60+10)};})},
+      {t:'Módulo 3 · Prática', l:c.topics.slice(3).map(function(t,i){return {t:t,d:(12+i*2)+':'+(i*23%50+10)};}).concat([{t:'Checklist final e próximos passos',d:'06:45'}])}
+    ];
+    c.lessons = c.modules.reduce(function(a,m){return a.concat(m.l);},[]);
+  });
+  var done = load('done', {basico:[0,1,2,3,4], capacidade:[0,1], defensivo1:[0]});
+  function pct(c){ var d=(done[c.id]||[]).length; return Math.round(d/c.lessons.length*100); }
+
+  var START = [
+    {id:'_boasvindas', title:'Bem-vindo', kicker:'Comece por aqui', tint:'#56653a'},
+    {id:'_missao', title:'Missão, Visão e Valores', kicker:'Tatical Fire', tint:'#6b5a2e'},
+    {id:'_cronograma', title:'Cronograma', kicker:'Agenda de turmas', tint:'#7b1d16'},
+    {id:'_normas', title:'Normas do Estande', kicker:'Segurança em primeiro lugar', tint:'#3f4a2a'},
+    {id:'_suporte', title:'Suporte ao Aluno', kicker:'WhatsApp', tint:'#4d4a3a'}
+  ];
+  var MATERIAL = [
+    {id:'_m1', title:'Checklist de Segurança', kicker:'Material de apoio · PDF', tint:'#4a4f45'},
+    {id:'_m2', title:'Nomenclatura', kicker:'Guia ilustrado · PDF', tint:'#56653a'},
+    {id:'_m3', title:'Legislação', kicker:'Material de apoio', tint:'#5a2a18'},
+    {id:'_m4', title:'Plano de Treino', kicker:'Treino em seco', tint:'#36402a'}
+  ];
+
+  /* ---------- login ---------- */
+  var login = document.getElementById('login');
+  if(load('logged', false)) login.classList.add('hide');
+  document.getElementById('loginForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    var em = document.getElementById('lEmail').value.trim();
+    if(em){ var n = em.split('@')[0].replace(/[._]/g,' '); n = n.charAt(0).toUpperCase()+n.slice(1); save('name', n); }
+    save('logged', true); login.classList.add('hide'); setUser(); go('home');
+  });
+  function setUser(){ var n = load('name','Aluno Demonstração'); document.getElementById('uName').textContent = n; document.getElementById('uAv').textContent = n.charAt(0).toUpperCase(); }
+  setUser();
+  document.getElementById('logout').onclick = function(){ save('logged', false); login.classList.remove('hide'); };
+
+  /* ---------- layout ---------- */
+  var app = document.getElementById('app'), view = document.getElementById('view');
+  document.getElementById('collapse').onclick = function(){ app.classList.toggle('collapsed'); };
+  document.getElementById('mobMenu').onclick = function(){ app.classList.add('mob-open'); };
+  document.getElementById('backdrop').onclick = function(){ app.classList.remove('mob-open'); };
+  document.querySelectorAll('.sb-link[data-view]').forEach(function(b){ b.addEventListener('click',function(){ go(b.dataset.view); }); });
+
+  function tile(c, opts){
+    opts = opts||{};
+    var enrolled = ENROLLED.indexOf(c.id)>-1, isCourse = !!c.lessons;
+    return '<button class="tile" data-tile="'+c.id+'">'+TF_posterHTML(c,{noBadge:true})+
+      (isCourse && !enrolled ? '<span class="lock" title="Não matriculado">'+LOCK+'</span>' : '')+
+      (isCourse && enrolled && opts.progress!==false ? '<div class="tprog" style="--p:'+pct(c)+'%"><i></i></div><div class="tmeta">'+pct(c)+'% concluído</div>' : '')+
+      (isCourse && !enrolled ? '<div class="tmeta">Disponível para matrícula</div>' : '')+
+    '</button>';
+  }
+  function row(title, items, opts){
+    var id = 'r'+Math.random().toString(36).slice(2,7);
+    return '<div class="row-head"><h3>'+title+'</h3><div class="row-ctrl"><button data-scroll="'+id+'" data-d="-1" aria-label="Anterior">'+ARR_L+'</button><button data-scroll="'+id+'" data-d="1" aria-label="Próximo">'+ARR_R+'</button></div></div>'+
+      '<div class="row" id="'+id+'">'+items.map(function(c){return tile(c,opts);}).join('')+'</div>';
+  }
+
+  /* ---------- views ---------- */
+  var V = {};
+  V.home = function(){
+    var mine = C.filter(function(c){return ENROLLED.indexOf(c.id)>-1;});
+    var cont = mine.filter(function(c){return pct(c)<100;}).sort(function(a,b){return pct(b)-pct(a);})[0] || mine[0];
+    return '<div class="view">'+
+      '<div class="ahero"><div class="bg"><img src="assets/img/logo.webp" alt=""></div><div>'+
+        '<span class="tag"><span class="dot"></span>Continue de onde parou</span>'+
+        '<h2>'+cont.title+'</h2><p style="color:#cfcabb;max-width:52ch">'+cont.short+'</p>'+
+        '<div class="prog" style="--p:'+pct(cont)+'%"><i></i></div><div class="mono" style="color:var(--dim)">'+pct(cont)+'% concluído · '+cont.lessons.length+' aulas</div>'+
+        '<div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap"><button class="btn" data-tile="'+cont.id+'">'+PLAY.replace('fill="#fff"','fill="currentColor" width="16"')+' Continuar</button><button class="btn btn-ghost" data-go="cursos">Todos os cursos</button></div>'+
+      '</div></div>'+
+      row('Comece aqui', START, {progress:false})+
+      row('Meus cursos', mine)+
+      row('Material de apoio', MATERIAL)+
+      row('Explore mais cursos', C.filter(function(c){return ENROLLED.indexOf(c.id)<0;}))+
+    '</div>';
+  };
+  V.cursos = function(q){
+    var list = C.filter(function(c){ return !q || (c.title+' '+c.kicker+' '+c.cat).toLowerCase().indexOf(q)>-1; });
+    return '<div class="view"><h1 class="view-title">'+(q?'Resultados para “'+q+'”':'Cursos')+'</h1>'+
+      '<div class="grid-tiles">'+(list.map(function(c){return tile(c);}).join('') || '<p style="color:var(--muted)">Nenhum curso encontrado.</p>')+'</div></div>';
+  };
+  V.player = function(id, li){
+    var c = C.filter(function(x){return x.id===id;})[0]; li = li||0;
+    var L = c.lessons[li], d = done[c.id]||[], k = 0;
+    return '<div class="view">'+
+      '<div class="crumbs mono" style="margin-bottom:16px"><a href="#" data-go="home">Início</a><span>/</span><a href="#" data-go="cursos">Cursos</a><span>/</span><span>'+c.title+'</span></div>'+
+      '<div class="player-wrap"><div>'+
+        '<div class="video" id="video"><img src="assets/img/logo.webp" alt=""><span class="vlabel">Aula '+String(li+1).padStart(2,'0')+' · '+c.title+'</span><button class="play" id="playBtn" aria-label="Reproduzir">'+PLAY+'</button><div class="vbar"><span>00:00</span><i></i><span>'+L.d+'</span></div></div>'+
+        '<div class="lesson-head"><div><span class="mono" style="color:var(--sand)">'+c.kicker+'</span><h2>'+L.t+'</h2></div>'+
+          '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-olive btn-sm" id="markDone">'+(d.indexOf(li)>-1?'✓ Concluída':'Marcar como concluída')+'</button>'+
+          (li<c.lessons.length-1?'<button class="btn btn-sm" data-lesson="'+(li+1)+'">Próxima aula '+ARR_R+'</button>':'')+'</div></div>'+
+        '<div class="prog" style="--p:'+pct(c)+'%;max-width:none"><i></i></div><div class="mono" style="color:var(--dim)">Progresso do curso: '+pct(c)+'%</div>'+
+        '<div class="tabs" id="ptabs"><button class="on" data-tab="desc">Descrição</button><button data-tab="mat">Material</button><button data-tab="com">Comentários</button></div>'+
+        '<div id="tabBody">'+tabs(c,'desc')+'</div>'+
+      '</div>'+
+      '<aside class="modules"><div class="mh"><span class="mono" style="color:var(--dim)">Conteúdo do curso</span><br><b>'+c.title+'</b></div>'+
+        c.modules.map(function(m){
+          return '<details class="mod" open><summary>'+m.t+'<small>'+m.l.length+' aulas</small></summary>'+
+            m.l.map(function(l){ var idx=k++; return '<button class="lesson'+(idx===li?' on':'')+(d.indexOf(idx)>-1?' done':'')+'" data-lesson="'+idx+'"><span class="ck"></span>'+l.t+'<span class="dur">'+l.d+'</span></button>'; }).join('')+
+          '</details>';
+        }).join('')+
+      '</aside></div></div>';
+  };
+  function tabs(c,t){
+    if(t==='desc') return '<p style="color:#cfcabb;max-width:70ch">'+c.desc+'</p><ul class="topics" style="list-style:none;display:grid;gap:6px;margin-top:16px">'+c.topics.map(function(x){return '<li style="color:var(--muted)"><span class="accent">›</span> '+x+'</li>';}).join('')+'</ul>';
+    if(t==='mat') return '<div class="files">'+['Apostila do curso','Checklist de segurança','Plano de treino em seco'].map(function(f){return '<div class="file"><span class="fi">PDF</span><div style="flex:1"><b>'+f+'</b><div class="mono" style="color:var(--dim)">'+c.title+'</div></div><button class="btn btn-ghost btn-sm" onclick="TF_t(\'Download disponível na versão final.\')">Baixar</button></div>';}).join('')+'</div>';
+    return '<div class="composer"><span class="avatar">'+document.getElementById('uAv').textContent+'</span><textarea placeholder="Deixe sua dúvida sobre esta aula..."></textarea></div><div class="post"><div class="post-head"><span class="avatar" style="width:34px;height:34px;font-size:13px;border:2px solid var(--brass)">IC</span><b>Instrutor Cláudio</b><small>· 2 dias atrás</small></div><p>Pessoal, revisem a empunhadura antes da aula prática. Repetição até virar reflexo!</p></div>';
+  }
+  V.comunidade = function(){
+    var cats = ['Todas','Tiro Defensivo','Calibre 12','Equipamentos','Legislação','Dúvidas'];
+    var posts = load('posts', [
+      {a:'Instrutor Cláudio', ini:'IC', cat:'Tiro Defensivo', t:'2 dias atrás', p:'Nova turma de Transição de Alvos confirmada! Treinaremos em 7 e 12 metros. Para sobreviver, não para ganhar medalhas.', l:24, mod:true},
+      {a:'Rafael T.', ini:'RT', cat:'Equipamentos', t:'5 dias atrás', p:'Qual coldre vocês recomendam para quem está começando no defensivo? Interno ou externo?', l:8},
+      {a:'Mariana S.', ini:'MS', cat:'Dúvidas', t:'1 semana atrás', p:'Fiz o Tiro Básico semana passada e já quero o próximo. Alguém indo para o Manuseio Seguro?', l:12},
+      {a:'Gustavo B.', ini:'GB', cat:'Calibre 12', t:'2 semanas atrás', p:'Curso de calibre 12 foi sensacional. Recomendo demais!', l:19}
+    ]);
+    return '<div class="view"><h1 class="view-title">Comunidade</h1><div class="comm"><div class="box">'+
+      '<div class="composer"><span class="avatar">'+document.getElementById('uAv').textContent+'</span><textarea id="newPost" placeholder="Escreva alguma coisa..."></textarea></div>'+
+      '<div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="btn btn-sm" id="pubPost">Publicar</button></div>'+
+      '<div class="mono" style="color:var(--dim);margin-top:18px">Filtrar por categoria</div>'+
+      '<div class="cats" id="cats">'+cats.map(function(c,i){return '<button class="cat'+(i?'':' on')+'" data-cat="'+c+'">'+c+'</button>';}).join('')+'</div>'+
+      '<div id="posts">'+posts.map(function(p,i){
+        return '<div class="post" data-pc="'+p.cat+'"><div class="post-head"><span class="avatar" style="width:38px;height:38px;font-size:14px;'+(p.mod?'border:2px solid var(--brass)':'')+'">'+p.ini+'</span><b>'+p.a+'</b><span class="cat">'+p.cat+'</span><small>· '+p.t+'</small></div><p>'+p.p.replace(/</g,'&lt;')+'</p><div class="acts"><button data-like="'+i+'">♥ <span>'+p.l+'</span> Reagir</button><button>Responder</button></div></div>';
+      }).join('')+'</div></div>'+
+      '<div style="display:grid;gap:18px"><div class="box"><h3 style="font-size:24px">Comunidade</h3><p style="color:var(--muted);font-size:14px;margin-top:6px">Troca de experiências, dúvidas e conquistas entre alunos e instrutor.</p>'+
+        '<div class="mod-list"><div class="mod-item"><span class="avatar">IC</span><div><b>Instrutor Cláudio</b><small>Moderador</small></div></div><div class="mod-item"><span class="avatar" style="background:var(--red)">TF</span><div><b>Equipe Tatical Fire</b><small>Moderador</small></div></div></div></div>'+
+        '<div class="box"><h3 style="font-size:24px">Regras</h3><ul class="checklist" style="margin:14px 0 0;font-size:14px;color:var(--muted)"><li>Respeito acima de tudo</li><li>Nada de conteúdo ilegal</li><li>Segurança sempre em primeiro lugar</li></ul></div>'+
+      '</div></div></div>';
+  };
+  V.aovivo = function(){
+    var L = [
+      {d:'28',m:'NOV',t:'Live: Dúvidas sobre o teste de capacidade técnica',p:'Quinta · 20h · com Instrutor Cláudio', now:true},
+      {d:'05',m:'DEZ',t:'Análise de vídeos dos alunos',p:'Quinta · 20h · envie seu vídeo pela comunidade'},
+      {d:'12',m:'DEZ',t:'Calibre 12: perguntas e respostas',p:'Quinta · 20h'},
+      {d:'19',m:'DEZ',t:'Encerramento do ano + agenda de turmas 2027',p:'Sábado · 10h'}
+    ];
+    return '<div class="view"><h1 class="view-title">Ao vivo</h1><div class="lives">'+L.map(function(x){
+      return '<div class="live'+(x.now?' now':'')+'"><div class="date"><b>'+x.d+'</b><small>'+x.m+'</small></div><div>'+(x.now?'<span class="tag" style="margin-bottom:8px"><span class="dot"></span>Próxima transmissão</span>':'')+'<h4>'+x.t+'</h4><p>'+x.p+'</p></div><button class="btn '+(x.now?'':'btn-ghost ')+'btn-sm" onclick="TF_t(\'Lembrete ativado! Você será avisado.\')">Lembrar-me</button></div>';
+    }).join('')+'</div></div>';
+  };
+  V.notif = function(){
+    var N = [
+      {t:'Nova turma de Calibre 12 aberta. Garanta sua vaga!',w:'Hoje'},
+      {t:'Instrutor Cláudio respondeu seu comentário em Tiro Básico.',w:'Ontem'},
+      {t:'Live de dúvidas confirmada para quinta às 20h.',w:'2 dias'},
+      {t:'Seu certificado de Tiro Básico está disponível.',w:'1 semana',r:1}
+    ];
+    document.getElementById('nBadge').style.display='none';
+    return '<div class="view"><h1 class="view-title">Notificações</h1><div class="box" style="padding:0">'+N.map(function(n){return '<div class="notif'+(n.r?' read':'')+'"><span class="dotn"></span><div>'+n.t+'<small>'+n.w+'</small></div></div>';}).join('')+'</div></div>';
+  };
+  V.perfil = function(){
+    var mine = C.filter(function(c){return ENROLLED.indexOf(c.id)>-1;});
+    var tot = mine.reduce(function(a,c){return a+(done[c.id]||[]).length;},0);
+    var n = document.getElementById('uName').textContent;
+    return '<div class="view"><h1 class="view-title">Meu perfil</h1><div class="profile">'+
+      '<div class="box pcard"><span class="avatar">'+n.charAt(0)+'</span><h3 style="font-size:28px">'+n+'</h3><p class="mono" style="color:var(--sand)">Associado · Plano Operador</p><p style="color:var(--muted);font-size:14px;margin-top:12px">Membro desde 2026 · Xanxerê, SC</p><button class="btn btn-ghost btn-sm btn-block" style="margin-top:18px" onclick="TF_t(\'Edição de perfil disponível na versão final.\')">Editar perfil</button></div>'+
+      '<div><div class="kpis"><div class="kpi"><b>'+mine.length+'</b><small>Cursos</small></div><div class="kpi"><b>'+tot+'</b><small>Aulas concluídas</small></div><div class="kpi"><b>'+mine.filter(function(c){return pct(c)===100;}).length+'</b><small>Certificados</small></div></div>'+
+      '<h3 style="font-size:24px;margin-bottom:12px">Progresso</h3>'+mine.map(function(c){return '<div class="cert"><img src="assets/img/logo.webp" alt=""><div style="flex:1"><b>'+c.title+'</b><div class="prog" style="--p:'+pct(c)+'%;max-width:none;margin:8px 0 0"><i></i></div></div><span class="mono" style="color:var(--sand)">'+pct(c)+'%</span></div>';}).join('')+
+      '</div></div></div>';
+  };
+  V.suporte = function(){
+    return '<div class="view"><h1 class="view-title">Suporte</h1><div class="comm"><div class="faq">'+
+      '<details open><summary>Como acesso as aulas de um curso?<i></i></summary><p>Na página inicial, clique no cartaz do curso em “Meus cursos”. As aulas ficam organizadas por módulos ao lado do vídeo.</p></details>'+
+      '<details><summary>Como me matriculo em um novo curso?<i></i></summary><p>Cursos com cadeado ainda não fazem parte da sua matrícula. Clique neles para ver detalhes e se inscrever.</p></details>'+
+      '<details><summary>Onde vejo as datas das turmas presenciais?<i></i></summary><p>Em “Comece aqui” › Cronograma, e também nas notificações da plataforma.</p></details>'+
+      '<details><summary>Como recebo meu certificado?<i></i></summary><p>Ao concluir 100% das aulas e a parte prática, o certificado fica disponível no seu perfil.</p></details>'+
+      '</div><div class="box"><h3 style="font-size:26px">Fale com a equipe</h3><p style="color:var(--muted);margin:8px 0 18px">Atendimento pelo WhatsApp em horário comercial.</p><a class="btn btn-block" href="https://wa.me/5549900000000" target="_blank" rel="noopener">Chamar no WhatsApp</a></div></div></div>';
+  };
+  V.info = function(it){
+    return '<div class="view"><div class="crumbs mono" style="margin-bottom:16px"><a href="#" data-go="home">Início</a><span>/</span><span>'+it.title+'</span></div>'+
+      '<div class="player-wrap"><div><div class="video"><img src="assets/img/logo.webp" alt=""><span class="vlabel">'+it.kicker+'</span><button class="play" id="playBtn">'+PLAY+'</button><div class="vbar"><span>00:00</span><i></i><span>05:00</span></div></div>'+
+      '<div class="lesson-head"><div><span class="mono" style="color:var(--sand)">'+it.kicker+'</span><h2>'+it.title+'</h2></div></div>'+
+      '<p style="color:#cfcabb;max-width:70ch">Conteúdo de exemplo. Aqui entra o vídeo ou documento “'+it.title+'” definido pela Tatical Fire.</p></div>'+
+      '<aside>'+TF_posterHTML(it,{noBadge:true})+'</aside></div></div>';
+  };
+
+  /* ---------- roteamento ---------- */
+  var state = {v:'home'};
+  function go(v, a, b){
+    state = {v:v,a:a,b:b};
+    app.classList.remove('mob-open');
+    document.querySelectorAll('.sb-link[data-view]').forEach(function(x){ x.classList.toggle('on', x.dataset.view===v || (v==='player'&&x.dataset.view==='cursos')); });
+    view.innerHTML = V[v](a,b);
+    window.scrollTo(0,0);
+    bind();
+  }
+  function bind(){
+    var pb = document.getElementById('playBtn');
+    if(pb) pb.onclick = function(){ var v=document.getElementById('video'); v.classList.add('playing'); pb.style.display='none'; TF_t('Player de demonstração — os vídeos reais entram na versão final.'); };
+    var md = document.getElementById('markDone');
+    if(md) md.onclick = function(){
+      var id = state.a, li = state.b||0; done[id] = done[id]||[];
+      var i = done[id].indexOf(li); if(i>-1) done[id].splice(i,1); else done[id].push(li);
+      save('done', done); go('player', id, li);
+    };
+    var tb = document.getElementById('ptabs');
+    if(tb) tb.onclick = function(e){ var b=e.target.closest('button'); if(!b) return; tb.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);}); document.getElementById('tabBody').innerHTML = tabs(C.filter(function(c){return c.id===state.a;})[0], b.dataset.tab); };
+    var cats = document.getElementById('cats');
+    if(cats) cats.onclick = function(e){ var b=e.target.closest('.cat'); if(!b) return; cats.querySelectorAll('.cat').forEach(function(x){x.classList.toggle('on',x===b);}); document.querySelectorAll('#posts .post').forEach(function(p){ p.style.display = (b.dataset.cat==='Todas'||p.dataset.pc===b.dataset.cat)?'':'none'; }); };
+    var pub = document.getElementById('pubPost');
+    if(pub) pub.onclick = function(){
+      var t = document.getElementById('newPost').value.trim(); if(!t) return;
+      var n = document.getElementById('uName').textContent;
+      var el = document.createElement('div'); el.className='post'; el.dataset.pc='Dúvidas';
+      el.innerHTML = '<div class="post-head"><span class="avatar" style="width:38px;height:38px;font-size:14px">'+n.charAt(0)+'</span><b>'+n+'</b><span class="cat">Dúvidas</span><small>· agora</small></div><p></p><div class="acts"><button>♥ <span>0</span> Reagir</button><button>Responder</button></div>';
+      el.querySelector('p').textContent = t;
+      document.getElementById('posts').prepend(el); document.getElementById('newPost').value='';
+      TF_t('Publicado na comunidade!');
+    };
+  }
+  document.addEventListener('click',function(e){
+    var t;
+    if((t=e.target.closest('[data-go]'))){ e.preventDefault(); go(t.dataset.go); return; }
+    if((t=e.target.closest('[data-tile]'))){
+      var id=t.dataset.tile, c=C.filter(function(x){return x.id===id;})[0];
+      if(c){ if(ENROLLED.indexOf(id)>-1) go('player', id, firstOpen(c)); else { TF_t('Você ainda não está matriculado. Redirecionando para o catálogo…'); setTimeout(function(){location.href='cursos.html#catalogo';},1300); } }
+      else { var it = START.concat(MATERIAL).filter(function(x){return x.id===id;})[0]; if(it.id==='_suporte') go('suporte'); else go('info', it); }
+      return;
+    }
+    if((t=e.target.closest('[data-lesson]'))){ go('player', state.a, +t.dataset.lesson); return; }
+    if((t=e.target.closest('[data-scroll]'))){ var r=document.getElementById(t.dataset.scroll); r.scrollBy({left:(+t.dataset.d)*r.clientWidth*.8,behavior:'smooth'}); return; }
+    if((t=e.target.closest('[data-like]'))){ t.classList.toggle('liked'); var s=t.querySelector('span'); s.textContent = +s.textContent + (t.classList.contains('liked')?1:-1); }
+  });
+  function firstOpen(c){ var d=done[c.id]||[]; for(var i=0;i<c.lessons.length;i++){ if(d.indexOf(i)<0) return i; } return 0; }
+
+  var st;
+  document.getElementById('search').addEventListener('input',function(){ var q=this.value.trim().toLowerCase(); clearTimeout(st); st=setTimeout(function(){ q ? go('cursos', q) : go('home'); },250); });
+
+  // toast simples
+  window.TF_t = function(msg){
+    var t = document.querySelector('.toast'); if(!t){ t=document.createElement('div'); t.className='toast'; document.body.appendChild(t); }
+    t.textContent = msg; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(function(){t.classList.remove('show');},3200);
+  };
+
+  go('home');
+})();
+</script>
+</body>
+</html>

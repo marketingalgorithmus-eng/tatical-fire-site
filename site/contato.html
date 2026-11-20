@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contato · Tatical Fire</title>
+<meta name="description" content="Fale com a Tatical Fire: cursos de tiro, testes de capacidade técnica e turmas fechadas em Xanxerê - SC.">
+<link rel="icon" href="assets/img/logo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .contact-grid{display:grid;grid-template-columns:1fr 1.3fr;gap:40px;align-items:start}
+  .ccards{display:grid;gap:14px}
+  .cc{display:flex;gap:18px;align-items:center;border:1px solid var(--line);background:var(--bg-2);padding:22px;transition:border-color .25s,background .25s}
+  a.cc:hover{border-color:var(--red);background:var(--panel)}
+  .cc .ico{width:52px;height:52px;flex:none;display:grid;place-items:center;background:var(--olive-dark);border:1px solid var(--line-2);color:var(--sand)}
+  .cc .ico svg{width:24px;height:24px}
+  .cc small{display:block;font-family:var(--ff-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+  .cc b{font-family:var(--ff-head);font-size:24px;letter-spacing:.03em;text-transform:uppercase}
+  .map{border:1px solid var(--line-2);height:280px;position:relative;overflow:hidden}
+  .map iframe{width:100%;height:100%;border:0;filter:grayscale(1) invert(.92) contrast(.9) sepia(.25)}
+  .hours{border:1px solid var(--line);padding:22px;background:var(--bg-2)}
+  .hours div{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line);font-size:15px}
+  .hours div:last-child{border:0}
+  .hours span:last-child{color:var(--sand)}
+  @media (max-width:1080px){.contact-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body data-page="contato">
+
+<section class="page-hero grid-bg">
+  <img class="bg-logo" src="assets/img/logo.webp" alt="">
+  <div class="container">
+    <div class="crumbs mono"><a href="index.html">Início</a><span>/</span><span>Contato</span></div>
+    <h1 class="h1 reveal">Fale com o <span class="accent">instrutor</span></h1>
+    <p class="lead reveal reveal-d1" style="margin-top:20px">Dúvidas sobre cursos, testes de capacidade técnica ou turmas fechadas? Envie sua mensagem e retornamos o mais rápido possível.</p>
+  </div>
+</section>
+
+<section class="pad">
+  <div class="container contact-grid">
+    <div style="display:grid;gap:24px">
+      <div class="ccards reveal">
+        <a class="cc" id="waCard" target="_blank" rel="noopener"><span class="ico" id="waIco"></span><div><small>WhatsApp</small><b>(49) 9 0000-0000</b></div></a>
+        <a class="cc" href="https://www.instagram.com/tatical.fire/" target="_blank" rel="noopener"><span class="ico" id="igIco1"></span><div><small>Instagram</small><b>@tatical.fire</b></div></a>
+        <a class="cc" href="https://www.instagram.com/sgt.claudio/" target="_blank" rel="noopener"><span class="ico" id="igIco2"></span><div><small>Instrutor</small><b>@sgt.claudio</b></div></a>
+        <div class="cc"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg></span><div><small>Localização</small><b>Xanxerê · SC</b></div></div>
+      </div>
+      <div class="map reveal"><iframe title="Mapa Xanxerê SC" loading="lazy" src="https://maps.google.com/maps?q=Xanxer%C3%AA%2C%20SC&z=13&output=embed"></iframe></div>
+      <div class="hours reveal">
+        <div class="mono" style="color:var(--dim);border:0;padding-top:0">// Atendimento (exemplo)</div>
+        <div><span>Segunda a sexta</span><span>08h – 18h</span></div>
+        <div><span>Turmas noturnas</span><span>19h – 22h</span></div>
+        <div><span>Sábados</span><span>Conforme agenda</span></div>
+      </div>
+    </div>
+
+    <div class="panel hud reveal reveal-d1">
+      <span class="sec-index">FORMULÁRIO</span>
+      <h2 class="h3" style="margin:12px 0 26px;font-size:40px">Envie sua mensagem</h2>
+      <form class="form" id="contactForm">
+        <div class="row2">
+          <div class="field"><label for="cNome">Nome completo</label><input id="cNome" required placeholder="Seu nome"></div>
+          <div class="field"><label for="cTel">WhatsApp</label><input id="cTel" required placeholder="(49) 9 0000-0000" inputmode="tel"></div>
+        </div>
+        <div class="field"><label for="cEmail">E-mail</label><input id="cEmail" type="email" placeholder="voce@email.com"></div>
+        <div class="field"><label for="cAssunto">Assunto</label>
+          <select id="cAssunto">
+            <option>Informações sobre cursos</option>
+            <option>Teste de capacidade técnica</option>
+            <option>Turma fechada / empresa</option>
+            <option>Associação</option>
+            <option>Outro assunto</option>
+          </select>
+        </div>
+        <div class="field"><label for="cMsg">Mensagem</label><textarea id="cMsg" placeholder="Como podemos ajudar?"></textarea></div>
+        <label class="check"><input type="checkbox" required> Concordo em ser contatado pela Tatical Fire sobre minha solicitação.</label>
+        <button class="btn btn-block" type="submit">Enviar mensagem</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="pad" style="padding-top:0">
+  <div class="container" style="max-width:920px">
+    <div class="sec-head center"><span class="sec-index">FAQ</span><h2 class="h2 reveal">Perguntas <span class="accent">frequentes</span></h2></div>
+    <div class="faq reveal">
+      <details><summary>Preciso ter arma para fazer o curso?<i></i></summary><p>Não. Nos cursos básicos o armamento e a estrutura do estande são disponibilizados. A munição pode ser cobrada à parte, conforme o curso.</p></details>
+      <details><summary>Nunca atirei. Por qual curso começo?<i></i></summary><p>O Tiro Básico é o ponto de partida ideal: você aprende segurança, fundamentos e faz seus primeiros disparos com acompanhamento individual.</p></details>
+      <details><summary>Como funciona o teste de capacidade técnica?<i></i></summary><p>O teste é aplicado por instrutor credenciado pela Polícia Federal. Oferecemos um treino preparatório no mesmo padrão da avaliação e orientação sobre a documentação.</p></details>
+      <details><summary>Vocês fazem turmas fechadas?<i></i></summary><p>Sim. Montamos turmas para grupos, entidades de classe, empresas e equipes de segurança, com conteúdo sob medida.</p></details>
+      <details><summary>Qual a diferença entre aluno e associado?<i></i></summary><p>O aluno se inscreve em cursos específicos. O associado tem vínculo contínuo com benefícios, como prioridade nas turmas e condições especiais. Veja a página de cadastro.</p></details>
+    </div>
+  </div>
+</section>
+
+<footer data-auto></footer>
+<script src="assets/js/main.js"></script>
+<script>
+  document.getElementById('waIco').innerHTML = TF_ICONS.wa;
+  document.getElementById('igIco1').innerHTML = TF_ICONS.ig;
+  document.getElementById('igIco2').innerHTML = TF_ICONS.ig;
+  document.getElementById('waCard').href = 'https://wa.me/' + TF_WHATS;
+  document.getElementById('contactForm').addEventListener('submit', function(e){
+    e.preventDefault(); this.reset();
+    TF_toast('Mensagem recebida! Retornaremos em breve pelo WhatsApp.');
+  });
+</script>
+</body>
+</html>

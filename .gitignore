@@ -1,0 +1,10 @@
+# Referências de terceiros (templates Framer/Esperandio salvos) — não versionar
+Referencias/
+
+# Configurações locais do Claude Code
+.claude/
+
+# Sistema
+Thumbs.db
+desktop.ini
+.DS_Store

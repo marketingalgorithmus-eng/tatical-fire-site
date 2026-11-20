@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cursos · Tatical Fire</title>
+<meta name="description" content="Cursos de tiro básico, defensivo, calibre 12, teste de capacidade técnica e turmas especiais com a Tatical Fire em Xanxerê - SC.">
+<link rel="icon" href="assets/img/logo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+  /* ===== Showcase estilo streaming ===== */
+  .showcase{min-height:100vh;position:relative;overflow:hidden;isolation:isolate;display:flex;flex-direction:column;justify-content:flex-end;padding:150px 0 40px}
+  .sc-bg{position:absolute;inset:0;z-index:-3;background:var(--bg)}
+  .sc-bg .logo{position:absolute;right:-8%;top:50%;width:min(80vw,1050px);transform:translateY(-55%);opacity:.32;filter:blur(1px) saturate(.9);transition:transform 1.2s var(--ease),opacity .6s}
+  .sc-tint{position:absolute;inset:0;z-index:-2;transition:background .8s;background:radial-gradient(ellipse 60% 70% at 72% 40%,color-mix(in srgb,var(--tint,#56653a) 55%,transparent),transparent 70%)}
+  .sc-fade{position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,var(--bg) 0%,rgba(10,12,8,.85) 35%,rgba(10,12,8,.2) 70%),linear-gradient(0deg,var(--bg) 0%,transparent 45%)}
+  .sc-info{max-width:620px;min-height:300px;display:flex;flex-direction:column;justify-content:flex-end}
+  .sc-info .kick{color:var(--sand)}
+  .sc-info h1{font-size:clamp(64px,9vw,140px);margin:12px 0 18px;line-height:.86}
+  .sc-meta{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;color:var(--muted);font-size:15px;margin-bottom:16px}
+  .sc-meta b{color:var(--text);font-weight:600}
+  .sc-meta .pill{border:1px solid var(--line-2);padding:2px 8px;font-family:var(--ff-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--sand)}
+  .sc-info p{color:#cfcabb;font-size:18px;max-width:52ch}
+  .sc-actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
+  .swap{animation:swapIn .7s var(--ease)}
+  @keyframes swapIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+
+  .rail-head{display:flex;justify-content:space-between;align-items:center;margin:46px 0 16px;gap:16px}
+  .rail-head h2{font-size:28px;letter-spacing:.04em}
+  .rail-ctrl{display:flex;gap:8px;align-items:center}
+  .rail-ctrl .count{font-family:var(--ff-mono);font-size:13px;color:var(--dim);margin-right:10px}
+  .rail-ctrl .count b{color:var(--text);font-size:22px;font-family:var(--ff-head)}
+  .rail-ctrl button{width:46px;height:46px;border:1px solid var(--line-2);display:grid;place-items:center;transition:all .2s;background:rgba(10,12,8,.6)}
+  .rail-ctrl button:hover{background:var(--red);border-color:var(--red)}
+  .rail-ctrl svg{width:18px;height:18px}
+  .rail{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:6px 24px 14px;margin:0 -24px;cursor:grab;scroll-padding-left:24px}
+  .rail::-webkit-scrollbar{display:none}
+  .rail.dragging{cursor:grabbing;scroll-snap-type:none}
+  .rail.dragging .rail-card{pointer-events:none}
+  .rail-card{flex:0 0 clamp(150px,12.5vw,190px);scroll-snap-align:start;transition:transform .4s var(--ease);position:relative;user-select:none}
+  .rail-card:hover{transform:translateY(-8px)}
+  .rail-card.active .poster{border-color:var(--red);box-shadow:0 0 0 1px var(--red),0 20px 40px rgba(0,0,0,.5)}
+  .rail-card.active::after{content:"";position:absolute;left:50%;bottom:-12px;width:30px;height:3px;background:var(--red);transform:translateX(-50%)}
+  .rail-card .poster .p-title{font-size:clamp(24px,2vw,30px)}
+  .rail-progress{height:2px;background:var(--line);margin-top:14px;position:relative}
+  .rail-progress i{position:absolute;left:0;top:0;bottom:0;background:var(--sand);width:20%;transition:left .2s,width .2s}
+
+  /* ===== Catálogo ===== */
+  .filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:36px}
+  .chip{font-family:var(--ff-head);font-weight:600;font-size:16px;letter-spacing:.08em;text-transform:uppercase;padding:9px 18px;border:1px solid var(--line-2);color:var(--muted);transition:all .2s}
+  .chip:hover{color:var(--text);border-color:var(--sand)}
+  .chip.on{background:var(--sand);color:#12140e;border-color:var(--sand)}
+  .catalog{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .ccard{border:1px solid var(--line);background:var(--bg-2);display:flex;flex-direction:column;text-align:left;transition:border-color .3s,transform .4s var(--ease);position:relative}
+  .ccard:hover{border-color:var(--line-2);transform:translateY(-4px)}
+  .ccard .thumb{aspect-ratio:16/10;overflow:hidden;position:relative}
+  .ccard .thumb .poster{aspect-ratio:auto;height:100%;border:0;justify-content:flex-end;padding:20px}
+  .ccard .thumb .poster .p-logo{top:42%;width:46%}
+  .ccard .thumb .poster .p-title{font-size:40px}
+  .ccard .thumb .poster .p-cross{background:linear-gradient(var(--red),var(--red)) 50% 42%/1px 100% no-repeat,linear-gradient(var(--red),var(--red)) 50% 42%/100% 1px no-repeat;-webkit-mask-image:radial-gradient(circle at 50% 42%,transparent 18%,#000 19%,transparent 45%);mask-image:radial-gradient(circle at 50% 42%,transparent 18%,#000 19%,transparent 45%)}
+  .ccard .body{padding:22px;display:flex;flex-direction:column;gap:10px;flex:1}
+  .ccard .row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .ccard h3{font-size:28px}
+  .ccard p{color:var(--muted);font-size:15px}
+  .ccard .foot{margin-top:auto;padding-top:16px;border-top:1px dashed var(--line);display:flex;justify-content:space-between;align-items:center}
+  .ccard .foot .mono{color:var(--dim)}
+  .ccard .rate{display:flex;align-items:center;gap:6px;font-weight:600;font-size:14px}
+  .ccard .rate .stars svg{width:13px;height:13px}
+  .ccard .go{width:40px;height:40px;background:var(--panel-2);border:1px solid var(--line-2);display:grid;place-items:center;transition:all .25s}
+  .ccard:hover .go{background:var(--red);border-color:var(--red)}
+  .ccard .go svg{width:16px;height:16px}
+  .empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:40px}
+  .modal-body h2{font-size:clamp(40px,5vw,64px);margin:10px 0 14px}
+  .topics{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;margin:12px 0 26px}
+  .topics li{display:flex;gap:10px;font-size:15px;color:#d6d2c4}
+  .topics li::before{content:"›";color:var(--red);font-weight:700}
+  .modal-actions{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0 30px}
+  @media (max-width:1080px){.catalog{grid-template-columns:1fr 1fr}}
+  @media (max-width:680px){
+    .catalog{grid-template-columns:1fr}
+    .rail{padding:6px 16px 14px;margin:0 -16px;scroll-padding-left:16px}
+    .sc-info{min-height:0}
+    .sc-bg .logo{width:130vw;right:-50vw;top:35%;opacity:.22}
+    .topics{grid-template-columns:1fr}
+    .rail-ctrl .count{display:none}
+  }
+</style>
+</head>
+<body data-page="cursos">
+
+<!-- SHOWCASE -->
+<section class="showcase" id="showcase">
+  <div class="sc-bg grid-bg"><img class="logo" src="assets/img/logo.webp" alt=""></div>
+  <div class="sc-tint" id="scTint"></div>
+  <div class="sc-fade"></div>
+
+  <div class="container">
+    <div class="sc-info" id="scInfo"></div>
+
+    <div class="rail-head">
+      <h2>Cursos</h2>
+      <div class="rail-ctrl">
+        <span class="count"><b id="railIdx">01</b> / <span id="railTotal">10</span></span>
+        <button id="railPrev" aria-label="Anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 5l-7 7 7 7"/></svg></button>
+        <button id="railNext" aria-label="Próximo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
+      </div>
+    </div>
+    <div class="rail" id="rail"></div>
+    <div class="rail-progress"><i id="railBar"></i></div>
+  </div>
+</section>
+
+<!-- CATÁLOGO -->
+<section class="pad" id="catalogo">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-index">TODOS OS CURSOS</span>
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap">
+        <h2 class="h2 reveal">Escolha sua <span class="accent">missão</span></h2>
+        <p class="lead reveal" style="max-width:46ch">Clique em um curso para ver o conteúdo, as avaliações dos alunos e se inscrever.</p>
+      </div>
+    </div>
+    <div class="filters" id="filters"></div>
+    <div class="catalog" id="catalog"></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="pad" style="padding-top:0">
+  <div class="container">
+    <div class="cta-box hud reveal">
+      <img class="logo-ghost" src="assets/img/logo.webp" alt="">
+      <div style="position:relative">
+        <span class="tag"><span class="dot"></span>Não encontrou o que procura?</span>
+        <h2 class="h2" style="margin:18px 0 14px">Treinamento <span class="accent">sob medida</span></h2>
+        <p class="lead">Montamos turmas fechadas para grupos, empresas e entidades. Fale com o instrutor.</p>
+      </div>
+      <div class="actions"><a class="btn" href="contato.html">Falar com o instrutor</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- MODAL -->
+<div class="modal" id="modal" role="dialog" aria-modal="true">
+  <div class="modal-box" style="position:relative">
+    <button class="modal-close" id="modalClose" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="modal-side" id="mSide"></div>
+    <div class="modal-body" id="mBody"></div>
+  </div>
+</div>
+
+<footer data-auto></footer>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+(function(){
+  var C = TF_COURSES, ARROW = TF_ICONS.arrow;
+  var info = document.getElementById('scInfo'), tint = document.getElementById('scTint');
+  var rail = document.getElementById('rail'), current = 0;
+
+  /* ---------- showcase ---------- */
+  function setFeatured(i){
+    current = i; var c = C[i];
+    tint.style.setProperty('--tint', c.tint);
+    info.innerHTML =
+      '<div class="swap">'+
+        '<span class="tag kick"><span class="dot"></span>'+c.kicker+'</span>'+
+        '<h1>'+c.title+'</h1>'+
+        '<div class="sc-meta"><span class="pill">'+c.cat+'</span><span>'+TF_stars(c.rating)+'</span><b>'+c.rating.toFixed(1).replace('.',',')+'</b><span>'+c.hours+'</span><span>'+c.level+'</span><span>'+c.format+'</span></div>'+
+        '<p>'+c.short+'</p>'+
+        '<div class="sc-actions">'+
+          '<a class="btn" href="cadastro.html?curso='+c.id+'">Inscrever-se '+ARROW+'</a>'+
+          '<button class="btn btn-ghost" data-open="'+i+'">Detalhes e avaliações</button>'+
+        '</div>'+
+      '</div>';
+    rail.querySelectorAll('.rail-card').forEach(function(el,k){el.classList.toggle('active',k===i);});
+    document.getElementById('railIdx').textContent = String(i+1).padStart(2,'0');
+  }
+  rail.innerHTML = C.map(function(c,i){return '<div class="rail-card" data-i="'+i+'" tabindex="0" role="button" aria-label="'+c.title+'">'+TF_posterHTML(c)+'</div>';}).join('');
+  document.getElementById('railTotal').textContent = String(C.length).padStart(2,'0');
+
+  rail.addEventListener('click',function(e){
+    var card = e.target.closest('.rail-card'); if(!card || moved) return;
+    var i = +card.dataset.i;
+    if(i===current){ openModal(i); } else { setFeatured(i); }
+  });
+  rail.addEventListener('keydown',function(e){ var card=e.target.closest('.rail-card'); if(card && e.key==='Enter') setFeatured(+card.dataset.i); });
+
+  function step(d){
+    var n = (current + d + C.length) % C.length; setFeatured(n);
+    var card = rail.children[n];
+    rail.scrollTo({left: rail.scrollLeft + card.getBoundingClientRect().left - rail.getBoundingClientRect().left - parseFloat(getComputedStyle(rail).paddingLeft), behavior:'smooth'});
+  }
+  document.getElementById('railPrev').onclick = function(){step(-1);};
+  document.getElementById('railNext').onclick = function(){step(1);};
+
+  // arrastar com o mouse
+  var down=false, sx=0, sl=0, moved=false;
+  rail.addEventListener('mousedown',function(e){down=true;moved=false;sx=e.pageX;sl=rail.scrollLeft;});
+  window.addEventListener('mouseup',function(){ if(down){down=false;setTimeout(function(){rail.classList.remove('dragging');moved=false;},0);} });
+  rail.addEventListener('mousemove',function(e){ if(!down) return; var dx=e.pageX-sx; if(Math.abs(dx)>5){moved=true;rail.classList.add('dragging');} rail.scrollLeft = sl - dx; });
+
+  var bar = document.getElementById('railBar');
+  function prog(){ var max = rail.scrollWidth - rail.clientWidth; var w = rail.clientWidth / rail.scrollWidth * 100; bar.style.width = w+'%'; bar.style.left = (max>0 ? rail.scrollLeft/max*(100-w) : 0)+'%'; }
+  rail.addEventListener('scroll',prog,{passive:true}); window.addEventListener('resize',prog);
+
+  // rotação automática até o usuário interagir
+  var auto = setInterval(function(){ step(1); }, 7000);
+  ['mousedown','touchstart','wheel'].forEach(function(ev){ rail.addEventListener(ev,function(){clearInterval(auto);},{passive:true}); });
+  document.querySelector('.rail-ctrl').addEventListener('click',function(){clearInterval(auto);});
+
+  setFeatured(0); prog();
+
+  /* ---------- catálogo ---------- */
+  var cats = ['Todos'].concat(C.map(function(c){return c.cat;}).filter(function(v,i,a){return a.indexOf(v)===i;}));
+  var filters = document.getElementById('filters'), catalog = document.getElementById('catalog');
+  filters.innerHTML = cats.map(function(c,i){return '<button class="chip'+(i===0?' on':'')+'" data-cat="'+c+'">'+c+'</button>';}).join('');
+  function render(cat){
+    var list = C.map(function(c,i){c._i=i;return c;}).filter(function(c){return cat==='Todos'||c.cat===cat;});
+    catalog.innerHTML = list.map(function(c,k){
+      return '<button class="ccard reveal'+(k%3?' reveal-d'+(k%3):'')+'" data-open="'+c._i+'">'+
+        '<div class="thumb">'+TF_posterHTML(c)+'</div>'+
+        '<div class="body">'+
+          '<div class="row"><span class="mono" style="color:var(--sand)">'+c.cat+' · '+c.level+'</span><span class="rate">'+TF_stars(c.rating)+' '+c.rating.toFixed(1).replace('.',',')+'</span></div>'+
+          '<h3>'+c.title+'</h3><p>'+c.short+'</p>'+
+          '<div class="foot"><span class="mono">'+c.hours+' · '+c.format+'</span><span class="go">'+ARROW+'</span></div>'+
+        '</div></button>';
+    }).join('') || '<p class="empty">Nenhum curso nesta categoria.</p>';
+    TF_observe(catalog);
+  }
+  filters.addEventListener('click',function(e){
+    var b=e.target.closest('.chip'); if(!b) return;
+    filters.querySelectorAll('.chip').forEach(function(x){x.classList.toggle('on',x===b);});
+    render(b.dataset.cat);
+  });
+  render('Todos');
+
+  /* ---------- modal ---------- */
+  var modal = document.getElementById('modal');
+  function openModal(i){
+    var c = C[i];
+    var dist = [5,4,3,2,1].map(function(s){var n=c.reviews.filter(function(r){return r.r===s;}).length;return {s:s,w:Math.round(n/c.reviews.length*100)};});
+    document.getElementById('mSide').innerHTML = TF_posterHTML(c) +
+      '<div style="margin-top:18px;display:grid;gap:10px">'+
+        '<a class="btn btn-block" href="cadastro.html?curso='+c.id+'">Inscrever-se</a>'+
+        '<a class="btn btn-ghost btn-block" href="https://wa.me/'+TF_WHATS+'?text='+encodeURIComponent('Olá! Tenho interesse no curso '+c.title+'.')+'" target="_blank" rel="noopener">Tirar dúvidas</a>'+
+      '</div>';
+    document.getElementById('mBody').innerHTML =
+      '<span class="tag"><span class="dot"></span>'+c.kicker+'</span>'+
+      '<h2>'+c.title+'</h2>'+
+      '<p style="color:#cfcabb">'+c.desc+'</p>'+
+      '<div class="meta-grid"><div><small>Carga horária</small><b>'+c.hours+'</b></div><div><small>Nível</small><b>'+c.level+'</b></div><div><small>Formato</small><b>'+c.format+'</b></div></div>'+
+      '<h4 class="mono" style="color:var(--sand);font-family:var(--ff-mono)">Conteúdo do curso</h4>'+
+      '<ul class="topics">'+c.topics.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul>'+
+      '<h4 class="mono" style="color:var(--sand);font-family:var(--ff-mono)">Avaliações dos alunos</h4>'+
+      '<div class="rating-big"><b>'+c.rating.toFixed(1).replace('.',',')+'</b><div>'+TF_stars(c.rating)+'<div style="color:var(--dim);font-size:13px">'+c.reviews.length+' avaliações</div></div>'+
+        '<div class="bars">'+dist.map(function(d){return '<div>'+d.s+'★<i style="--w:'+d.w+'%"></i></div>';}).join('')+'</div></div>'+
+      c.reviews.map(function(r){return '<div class="review"><div class="review-head"><div class="who" style="border:0;padding:0;margin:0"><span class="avatar">'+r.n[0]+'</span><div><b>'+r.n+'</b><small>Aluno verificado</small></div></div>'+TF_stars(r.r)+'</div><p style="color:#d6d2c4">“'+r.t+'”</p></div>';}).join('')+
+      '<div class="modal-actions"><a class="btn" href="cadastro.html?curso='+c.id+'">Quero me inscrever '+ARROW+'</a><span class="mono" style="color:var(--dim);align-self:center">Investimento: '+c.price+'</span></div>';
+    modal.classList.add('open'); document.body.style.overflow='hidden';
+    modal.querySelector('.modal-box').scrollTop = 0;
+  }
+  function closeModal(){ modal.classList.remove('open'); document.body.style.overflow=''; }
+  document.addEventListener('click',function(e){ var o=e.target.closest('[data-open]'); if(o && !o.closest('.rail')) openModal(+o.dataset.open); });
+  document.getElementById('modalClose').onclick = closeModal;
+  modal.addEventListener('click',function(e){ if(e.target===modal) closeModal(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeModal(); });
+})();
+</script>
+</body>
+</html>

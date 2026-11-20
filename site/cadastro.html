@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cadastro de Alunos e Associados · Tatical Fire</title>
+<meta name="description" content="Cadastre-se como aluno ou associado da Tatical Fire.">
+<link rel="icon" href="assets/img/logo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .switch{display:inline-grid;grid-template-columns:1fr 1fr;border:1px solid var(--line-2);margin-top:30px;position:relative;background:var(--bg)}
+  .switch button{font-family:var(--ff-head);font-weight:700;font-size:19px;letter-spacing:.08em;text-transform:uppercase;padding:14px 34px;position:relative;z-index:1;color:var(--muted);transition:color .3s}
+  .switch button.on{color:#fff}
+  .switch i{position:absolute;top:0;bottom:0;left:0;width:50%;background:var(--red);transition:transform .4s var(--ease)}
+  .switch[data-mode="associado"] i{transform:translateX(100%)}
+  .reg{display:grid;grid-template-columns:1fr 1.5fr;gap:40px;align-items:start}
+  .side-info{position:sticky;top:110px;display:grid;gap:16px}
+  .benefit{display:flex;gap:14px;padding:18px;border:1px solid var(--line);background:var(--bg-2)}
+  .benefit svg{width:22px;height:22px;flex:none;color:var(--red);margin-top:2px}
+  .benefit b{font-family:var(--ff-head);font-size:21px;text-transform:uppercase;letter-spacing:.03em;display:block;line-height:1.1}
+  .benefit p{color:var(--muted);font-size:14px}
+  .stepper{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:30px}
+  .stepper div{border-top:3px solid var(--line-2);padding-top:10px;font-family:var(--ff-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);transition:all .3s}
+  .stepper div.on{border-color:var(--red);color:var(--text)}
+  .stepper div.done{border-color:var(--olive-2);color:var(--sand)}
+  .step{display:none}
+  .step.on{display:grid;gap:18px;animation:swapIn .5s var(--ease)}
+  @keyframes swapIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+  .step-nav{display:flex;justify-content:space-between;gap:12px;margin-top:8px}
+  .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .plan{border:1px solid var(--line-2);padding:20px 16px;cursor:pointer;position:relative;transition:all .25s;background:var(--bg)}
+  .plan input{position:absolute;opacity:0}
+  .plan:hover{border-color:var(--sand)}
+  .plan.sel{border-color:var(--red);background:rgba(211,38,27,.07)}
+  .plan .pn{font-family:var(--ff-head);font-weight:800;font-size:24px;text-transform:uppercase}
+  .plan .pp{font-family:var(--ff-head);font-weight:700;font-size:30px;color:var(--sand);margin:6px 0}
+  .plan .pp small{font-size:14px;color:var(--dim)}
+  .plan ul{list-style:none;font-size:13px;color:var(--muted);display:grid;gap:4px}
+  .plan .rec{position:absolute;top:-10px;right:10px;background:var(--red);color:#fff;font-family:var(--ff-mono);font-size:10px;letter-spacing:.12em;padding:3px 7px}
+  .success{text-align:center;display:none;padding:30px 0}
+  .success.on{display:block;animation:swapIn .5s var(--ease)}
+  .success .seal{width:120px;height:120px;margin:0 auto 24px;border-radius:50%;border:2px solid var(--red);display:grid;place-items:center;position:relative}
+  .success .seal img{width:96px;border-radius:50%}
+  .only-assoc{display:none}
+  body.assoc .only-assoc{display:grid}
+  body.assoc .only-aluno{display:none}
+  body.assoc .benefit.only-assoc{display:flex}
+  .stack{display:grid;gap:18px}
+  @media (max-width:1080px){.reg{grid-template-columns:1fr}.side-info{position:static}}
+  @media (max-width:680px){.plans{grid-template-columns:1fr}.switch button{padding:12px 18px;font-size:16px}}
+</style>
+</head>
+<body data-page="cadastro">
+
+<section class="page-hero grid-bg">
+  <img class="bg-logo" src="assets/img/logo.webp" alt="">
+  <div class="container">
+    <div class="crumbs mono"><a href="index.html">Início</a><span>/</span><span>Cadastro</span></div>
+    <h1 class="h1 reveal">Aliste-se na <span class="accent">Tatical Fire</span></h1>
+    <p class="lead reveal reveal-d1" style="margin-top:20px">Cadastre-se como <b class="sand">aluno</b> para se inscrever em um curso, ou como <b class="sand">associado</b> para ter vínculo contínuo e benefícios exclusivos.</p>
+    <div class="switch" id="switch" data-mode="aluno"><i></i><button class="on" data-mode="aluno">Sou aluno</button><button data-mode="associado">Quero ser associado</button></div>
+  </div>
+</section>
+
+<section class="pad">
+  <div class="container reg">
+    <aside class="side-info">
+      <span class="sec-index only-aluno" style="display:block">O QUE VOCÊ RECEBE</span>
+      <span class="sec-index only-assoc" style="display:none" id="assocLabel">BENEFÍCIOS</span>
+      <div class="benefit only-aluno"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg><div><b>Vaga garantida</b><p>Sua inscrição reserva a vaga na próxima turma do curso escolhido.</p></div></div>
+      <div class="benefit only-aluno"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="1"/><path d="M10 9l5 2.5-5 2.5z"/></svg><div><b>Área do aluno</b><p>Acesso à plataforma com aulas em vídeo e material de apoio.</p></div></div>
+      <div class="benefit only-aluno"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 3v6c0 5-3.5 9-8 11-4.5-2-8-6-8-11V5z"/></svg><div><b>Certificado</b><p>Certificado de conclusão ao final de cada curso.</p></div></div>
+      <div class="benefit only-assoc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg><div><b>Prioridade nas turmas</b><p>Reserva antecipada nas novas turmas e eventos.</p></div></div>
+      <div class="benefit only-assoc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12l-8 8-9-9V3h8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg><div><b>Condições especiais</b><p>Descontos em cursos, treinos livres e eventos.</p></div></div>
+      <div class="benefit only-assoc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M2 20c.6-3 3-5 6-5s5.4 2 6 5M14 15c3 0 5.4 2 6 5"/></svg><div><b>Comunidade</b><p>Acesso completo à plataforma e à comunidade de associados.</p></div></div>
+      <p class="mono" style="color:var(--dim);margin-top:6px">Já tem cadastro? <a href="aluno.html" style="color:var(--sand)">Entrar na área do aluno →</a></p>
+    </aside>
+
+    <div class="panel hud">
+      <div id="formWrap">
+        <div class="stepper" id="stepper"><div class="on">01 · Dados pessoais</div><div>02 · Endereço</div><div id="st3label">03 · Curso</div></div>
+        <form class="form" id="regForm" novalidate>
+          <!-- passo 1 -->
+          <div class="step on" data-step="0">
+            <div class="field"><label for="fNome">Nome completo *</label><input id="fNome" required placeholder="Como no documento"></div>
+            <div class="row2">
+              <div class="field"><label for="fCpf">CPF *</label><input id="fCpf" required placeholder="000.000.000-00" inputmode="numeric" maxlength="14"></div>
+              <div class="field"><label for="fNasc">Data de nascimento *</label><input id="fNasc" type="date" required></div>
+            </div>
+            <div class="row2">
+              <div class="field"><label for="fTel">WhatsApp *</label><input id="fTel" required placeholder="(49) 9 0000-0000" inputmode="tel" maxlength="16"></div>
+              <div class="field"><label for="fEmail">E-mail *</label><input id="fEmail" type="email" required placeholder="voce@email.com"></div>
+            </div>
+          </div>
+          <!-- passo 2 -->
+          <div class="step" data-step="1">
+            <div class="row2">
+              <div class="field"><label for="fCep">CEP</label><input id="fCep" placeholder="89820-000" inputmode="numeric" maxlength="9"></div>
+              <div class="field"><label for="fCidade">Cidade *</label><input id="fCidade" required value="Xanxerê"></div>
+            </div>
+            <div class="field"><label for="fEnd">Endereço</label><input id="fEnd" placeholder="Rua, número, bairro"></div>
+            <div class="row2">
+              <div class="field"><label for="fExp">Experiência com tiro *</label>
+                <select id="fExp" required><option value="">Selecione</option><option>Nunca atirei</option><option>Já atirei algumas vezes</option><option>Pratico regularmente</option><option>Profissional da área</option></select></div>
+              <div class="field"><label for="fCac">Possui registro (CAC/posse)?</label>
+                <select id="fCac"><option>Não</option><option>Sim, CAC</option><option>Sim, posse</option><option>Em andamento</option></select></div>
+            </div>
+          </div>
+          <!-- passo 3 -->
+          <div class="step" data-step="2">
+            <div class="only-aluno stack">
+              <div class="field"><label for="fCurso">Curso de interesse *</label><select id="fCurso"></select></div>
+              <div class="field"><label for="fTurno">Turno preferido</label><select id="fTurno"><option>Noite</option><option>Manhã</option><option>Tarde</option><option>Sábado</option></select></div>
+            </div>
+            <div class="only-assoc" style="gap:12px">
+              <label class="mono" style="color:var(--sand)">Plano de associação *</label>
+              <div class="plans" id="plans">
+                <label class="plan"><input type="radio" name="plano" value="Recruta"><div class="pn">Recruta</div><div class="pp">R$ 00<small>/mês</small></div><ul><li>Plataforma online</li><li>Comunidade</li><li>5% em cursos</li></ul></label>
+                <label class="plan sel"><span class="rec">Recomendado</span><input type="radio" name="plano" value="Operador" checked><div class="pn">Operador</div><div class="pp">R$ 00<small>/mês</small></div><ul><li>Tudo do Recruta</li><li>Prioridade nas turmas</li><li>15% em cursos</li></ul></label>
+                <label class="plan"><input type="radio" name="plano" value="Elite"><div class="pn">Elite</div><div class="pp">R$ 00<small>/mês</small></div><ul><li>Tudo do Operador</li><li>Treinos livres mensais</li><li>25% em cursos</li></ul></label>
+              </div>
+              <p class="mono" style="color:var(--dim)">* Valores ilustrativos — definir com o cliente.</p>
+            </div>
+            <div class="field"><label for="fObs">Observações</label><textarea id="fObs" style="min-height:90px" placeholder="Algo que o instrutor deva saber?"></textarea></div>
+            <label class="check"><input type="checkbox" id="fTermos" required> Declaro que as informações são verdadeiras e concordo com as normas de segurança do estande.</label>
+          </div>
+
+          <div class="step-nav">
+            <button type="button" class="btn btn-ghost" id="prevBtn" style="visibility:hidden">Voltar</button>
+            <button type="submit" class="btn" id="nextBtn">Continuar</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="success" id="success">
+        <div class="seal"><img src="assets/img/logo.webp" alt=""></div>
+        <span class="tag"><span class="dot"></span>Cadastro recebido</span>
+        <h2 class="h2" style="margin:18px 0 12px">Missão <span class="accent">aceita</span></h2>
+        <p class="lead" style="margin:0 auto" id="successMsg"></p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px">
+          <a class="btn" href="aluno.html">Acessar área do aluno</a>
+          <a class="btn btn-ghost" href="cursos.html">Ver outros cursos</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer data-auto></footer>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+(function(){
+  var mode = 'aluno', step = 0;
+  var sw = document.getElementById('switch');
+  function setMode(m){
+    mode = m; sw.dataset.mode = m;
+    sw.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',b.dataset.mode===m);});
+    document.body.classList.toggle('assoc', m==='associado');
+    document.getElementById('assocLabel').style.display = m==='associado' ? 'block' : 'none';
+    document.querySelector('.side-info .only-aluno').style.display = m==='aluno' ? 'block' : 'none';
+    document.getElementById('st3label').textContent = m==='aluno' ? '03 · Curso' : '03 · Plano';
+  }
+  sw.addEventListener('click',function(e){ var b=e.target.closest('button'); if(b) setMode(b.dataset.mode); });
+  if(location.hash==='#associado') setMode('associado');
+
+  // cursos no select + pré-seleção via ?curso=
+  var sel = document.getElementById('fCurso');
+  sel.innerHTML = TF_COURSES.map(function(c){return '<option value="'+c.id+'">'+c.title+' — '+c.kicker+'</option>';}).join('');
+  var q = new URLSearchParams(location.search).get('curso'); if(q) sel.value = q;
+
+  // planos
+  document.getElementById('plans').addEventListener('change',function(e){
+    this.querySelectorAll('.plan').forEach(function(p){p.classList.toggle('sel',p.querySelector('input').checked);});
+  });
+
+  // máscaras simples
+  function mask(id, fn){ var el=document.getElementById(id); el.addEventListener('input',function(){ el.value = fn(el.value.replace(/\D/g,'')); }); }
+  mask('fCpf',function(v){return v.slice(0,11).replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');});
+  mask('fTel',function(v){v=v.slice(0,11);return v.replace(/^(\d{2})(\d)/,'($1) $2').replace(/(\d)(\d{4})(\d{4})$/,'$1 $2-$3');});
+  mask('fCep',function(v){return v.slice(0,8).replace(/(\d{5})(\d)/,'$1-$2');});
+
+  var steps = document.querySelectorAll('.step'), marks = document.querySelectorAll('#stepper div');
+  var prev = document.getElementById('prevBtn'), next = document.getElementById('nextBtn');
+  function show(i){
+    step = i;
+    steps.forEach(function(s,k){s.classList.toggle('on',k===i);});
+    marks.forEach(function(m,k){m.classList.toggle('on',k===i);m.classList.toggle('done',k<i);});
+    prev.style.visibility = i ? 'visible' : 'hidden';
+    next.textContent = i===steps.length-1 ? (mode==='aluno' ? 'Confirmar inscrição' : 'Confirmar associação') : 'Continuar';
+  }
+  function valid(){
+    var ok = true;
+    steps[step].querySelectorAll('[required]').forEach(function(el){
+      if(el.offsetParent===null) return;
+      var good = el.type==='checkbox' ? el.checked : el.value.trim()!=='' && (el.type!=='email' || /\S+@\S+\.\S+/.test(el.value));
+      if(!good){ ok=false; el.style.borderColor='var(--red)'; el.addEventListener('input',function(){el.style.borderColor='';},{once:true}); }
+    });
+    if(!ok) TF_toast('Preencha os campos obrigatórios marcados.');
+    return ok;
+  }
+  prev.onclick = function(){ show(step-1); };
+  document.getElementById('regForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    if(!valid()) return;
+    if(step < steps.length-1){ show(step+1); return; }
+    var nome = document.getElementById('fNome').value.split(' ')[0];
+    var curso = TF_COURSES.filter(function(c){return c.id===sel.value;})[0];
+    var plano = (document.querySelector('input[name=plano]:checked')||{}).value;
+    document.getElementById('successMsg').textContent = mode==='aluno'
+      ? nome+', sua pré-inscrição no curso '+curso.title+' foi registrada. O instrutor entrará em contato pelo WhatsApp para confirmar a turma.'
+      : nome+', seu pedido de associação no plano '+plano+' foi registrado. Entraremos em contato para concluir sua adesão.';
+    document.getElementById('formWrap').style.display='none';
+    document.getElementById('success').classList.add('on');
+    window.scrollTo({top:document.querySelector('.reg').offsetTop-120,behavior:'smooth'});
+  });
+  show(0);
+})();
+</script>
+</body>
+</html>
